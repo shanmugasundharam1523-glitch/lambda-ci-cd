@@ -1,32 +1,15 @@
-pipeline {
-    agent any
+stage('Package Lambda') {
+    steps {
+        sh '''
+        echo "PWD:"
+        pwd
+        echo "Files in workspace:"
+        ls -l
 
-    environment {
-        AWS_DEFAULT_REGION = "ap-south-1"
-        FUNCTION_NAME = "jenkins-backend"
-    }
+        zip -r function.zip lambda_function.py
 
-    stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
-        stage('Package Lambda') {
-            steps {
-                sh '''
-                zip -r function.zip lambda_function.py
-                '''
-            }
-        }
-
-        stage('Deploy Lambda') {
-            steps {
-                sh '''
-                aws lambda update-function-code                   --function-name $FUNCTION_NAME                   --zip-file fileb://function.zip
-                '''
-            }
-        }
+        echo "Zip file details:"
+        ls -lh function.zip
+        '''
     }
 }
