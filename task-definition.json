@@ -1,0 +1,21 @@
+{
+  "family": "ecs-backend-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::204107104458:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "ecs-backend-container",
+      "image": "IMAGE_URI",
+      "portMappings": [
+        {
+          "containerPort": 5000,
+          "protocol": "tcp"
+        }
+      ],
+      "essential": true
+    }
+  ]
+}
