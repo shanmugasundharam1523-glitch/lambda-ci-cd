@@ -1,23 +1,36 @@
-stage("Deploy to EKS") {
-  steps {
-    sh '''
-      echo "🔍 Current directory"
-      pwd
+pipeline {
+  agent any
 
-      echo "📂 Listing k8s directory"
-      ls -l k8s/
+  environment {
+    AWS_REGION = "ap-south-1"
+    EKS_CLUSTER = "my-eks-cluster"
+  }
 
-      echo "📄 Applying backend deployment"
-      kubectl apply -f k8s/backend-deployment.yaml
+  stages {
 
-      echo "📄 Applying backend service"
-      kubectl apply -f k8s/backend-service.yaml
+    stage("Deploy to EKS") {
+      steps {
+        sh '''
+          echo "🔍 Workspace"
+          pwd
 
-      echo "📦 Deployments in default namespace"
-      kubectl get deployments
+          echo "📂 List k8s directory"
+          ls -l k8s/
 
-      echo "🚀 Rollout status"
-      kubectl rollout status deployment/backend
-    '''
+          echo "📄 Apply backend deployment"
+          kubectl apply -f k8s/backend-deployment.yaml
+
+          echo "📄 Apply backend service"
+          kubectl apply -f k8s/backend-service.yaml
+
+          echo "📦 Deployments"
+          kubectl get deployments
+
+          echo "🚀 Rollout status"
+          kubectl rollout status deployment/backend
+        '''
+      }
+    }
+
   }
 }
